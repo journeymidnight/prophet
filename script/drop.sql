@@ -1,0 +1,1 @@
+use prophet;drop table nodes;

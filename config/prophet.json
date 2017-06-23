@@ -1,0 +1,14 @@
+{
+  "LogPath": "/var/log/prophet/prophet.log",
+  "PanicLogPath":"/var/log/prophet/panic.log",
+  "PidFile": "/var/run/prophet/prophet.pid",
+  "IamEndpoint": "http://127.0.0.1:8888",
+  "DatabaseConnectionString": "prophet:123456@/prophet",
+  "InfluxDbAddress": "http://120.132.83.71:8086",
+  "InfluxDbName": "prophet",
+  "InfluxDbUserName": "",
+  "InfluxDbUserPassword": "",
+  "BindPort": 8890,
+  "DebugMode": false,
+  "LogLeval": 5
+}
