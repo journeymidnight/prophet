@@ -28,13 +28,13 @@ func InfluxDbHandle(c *gin.Context) {
 	body, _ := ioutil.ReadAll(reader)
 	js, err := simplejson.NewJson(body)
 	if err != nil {
-		c.JSON(http.StatusOK, QueryResponse{RetCode:5000,Message:"uncode body err",Data:err.Error()})
+		c.JSON(http.StatusBadRequest, QueryResponse{Message:"uncode body err",Data:err.Error()})
 		return
 	}
 	js.Set("action", action)
 	m_body , err := js.MarshalJSON()
 	if err != nil {
-		c.JSON(http.StatusOK, QueryResponse{RetCode:5000,Message:"MarshalJSON err",Data:err.Error()})
+		c.JSON(http.StatusBadRequest, QueryResponse{Message:"MarshalJSON err",Data:err.Error()})
 		return
 	}
 	iamClient := new(http.Client)
@@ -42,7 +42,7 @@ func InfluxDbHandle(c *gin.Context) {
 	request.Header = c.Request.Header
 	response, err := iamClient.Do(request)
 	if err != nil {
-		c.JSON(http.StatusOK, QueryResponse{RetCode:5010,Message:"proxy request to iam failed",Data:err.Error()})
+		c.JSON(http.StatusInternalServerError, QueryResponse{Message:"proxy request to iam failed",Data:err.Error()})
 		return
 	}
 	res_body, _ := ioutil.ReadAll(response.Body)

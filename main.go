@@ -41,7 +41,10 @@ func main() {
 	syscall.Dup2(int(f.Fd()), 2)
 	syscall.Dup2(int(f.Fd()), 1)
 	router := gin.Default()
-	router.POST("/:dst/:action", api.ApiHandle)
+	router.GET("/:dst/:action", api.GetHandle)
+	router.PUT("/:dst/:action", api.PutHandle)
+	router.DELETE("/:dst/:action", api.DelHandle)
+	router.POST("/:dst/:action", api.PostHandle)
 	router.Run(":" + strconv.Itoa(helper.CONFIG.BindPort))
 }
 
