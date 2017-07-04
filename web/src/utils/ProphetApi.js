@@ -1,4 +1,4 @@
-const api = process.env.REACT_APP_PROPHET_API_URL || 'http://localhost:8890'
+const api = process.env.REACT_APP_PROPHET_API_URL || 'http://localhost:3000'
 
 let token = localStorage.token
 
@@ -42,7 +42,7 @@ export const listnodes = () =>
             ...headers,
         }
     }).then(res => res.json())
-        .then(data => data.Data)
+        .then(data => data.data)
 
 export const fetchmetric = (hostname, measurement, measure, from, to) =>
     fetch(`${api}/local/fetchmetric`, {

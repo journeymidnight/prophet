@@ -3,20 +3,30 @@ import { Nav, Navbar, NavItem } from 'react-bootstrap'
 
 
 class MainNav extends Component {
-    constructor() {
-        super()
-        this.handleSelect=this.handleSelect.bind(this)
-    }
-
     state = {
-        activeKey:1
+        activeKey:0
     }
 
-    handleSelect(selectedKey) {
+    list = [
+        {
+            path:'/dashboard',
+            context:'Dashboard'
+        },
+        {
+            path:'/host',
+            context:'Host'
+        },
+        {
+            path:'/manage',
+            context:'Manage'
+        }
+    ]
+
+    handleSelect = (selectedKey) => {
         this.setState({activeKey:selectedKey})
-        if (selectedKey === 1) {
+        if (selectedKey === 0) {
             this.props.history.push('/dashboard')
-        } else if (selectedKey === 2) {
+        } else if (selectedKey === 1) {
             this.props.history.push('/host')
         } else {
             this.props.history.push('/manage')
@@ -26,12 +36,6 @@ class MainNav extends Component {
 
     render() {
         return (
-            /*
-            <Navbar bsStyle="pills" activeKey={this.state.activeKey} onSelect={this.handleSelect}>
-                <NavItem eventKey={1} href="/dashboard">Dashboard</NavItem>
-                <NavItem eventKey={2} href="/host">Hosts</NavItem>
-                <NavItem eventKey={3} href="/manage">Manage</NavItem>
-            </Navbar>*/
             <Navbar inverse collapseOnSelect onSelect={this.handleSelect}>
                 <Navbar.Header>
                     <Navbar.Brand>
@@ -41,10 +45,12 @@ class MainNav extends Component {
                 </Navbar.Header>
 
                 <Navbar.Collapse>
-                    <Nav>
-                        <NavItem eventKey={1} href="/dashboard">Dashboard</NavItem>
-                        <NavItem eventKey={2} href="/host">Hosts</NavItem>
-                        <NavItem eventKey={3} href="/manage">Manage</NavItem>
+                    <Nav activeKey={this.state.activeKey}>
+                        {
+                            this.list.map((item, index) => (
+                                <NavItem key={index} eventKey={index} href={item.path}>{item.context}</NavItem>
+                            ))
+                        }
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

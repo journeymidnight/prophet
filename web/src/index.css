@@ -59,3 +59,11 @@ body, .app {
     background-size: 30px;
     font-size: 0;
 }
+
+.pagination-container {
+    text-align: center;
+}
+
+.addButton {
+    float: right;
+}

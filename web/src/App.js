@@ -78,7 +78,11 @@ class App extends Component {
         return (
             <div>
                 <Route path="/" render={({ history }) => (
-                    <MainNav history={history}/>
+                    fakeAuth.isAuthenticated ? (
+                        <MainNav history={history}/>
+                    ) : (
+                        <div/>
+                    )
                 )}/>
                 <Route exact path="/" render={() => (
                     fakeAuth.isAuthenticated ? (
