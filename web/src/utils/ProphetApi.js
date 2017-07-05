@@ -1,4 +1,6 @@
+const querystring = require('querystring');
 const api = process.env.REACT_APP_PROPHET_API_URL || 'http://localhost:3000'
+
 
 let token = localStorage.token
 
@@ -10,18 +12,24 @@ const headers = {
     'Authorization': token
 }
 
-export const addnode = (hostname, ip) =>
-    fetch(`${api}/local/addnode`, {
-        method: 'PUT',
-        headers: {
-            ...headers,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            hostname,
-            ip
-        })
-    }).then(res => res.json())
+
+export const addnode = (hostname, ip) => {
+    var parameters = {
+        hostname,
+        ip
+    }
+    var para = '?' + querystring.stringify(parameters)
+    return (
+        fetch(`${api}/local/addnode${para}`, {
+            method: 'PUT',
+            headers: {
+                ...headers,
+                'Content-Type': 'application/json'
+            }
+        }).then(res => res.json())
+    )
+}
+
 
 export const delnode = (hostname) =>
     fetch(`${api}/local/delnode`, {

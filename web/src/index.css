@@ -49,11 +49,22 @@ body, .app {
     outline: 0;
 }
 
-.test-logo {
+.person-logo {
     display: block;
     width: 80px;
     height: 80px;
     background-image: url('./icon/person.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 30px;
+    font-size: 0;
+}
+
+.back-logo {
+    display: block;
+    width: 80px;
+    height: 80px;
+    background-image: url('./icon/arrow-back.svg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: 30px;

@@ -32,6 +32,11 @@ class Host extends Component {
         });
     }
 
+    handleClick = () => {
+        const { history } = this.props
+        history.push('/host/add')
+    }
+
     render () {
         console.log("hosts:", this.state.hosts)
         const { query, hosts } = this.state
@@ -49,13 +54,13 @@ class Host extends Component {
                     <Form inline>
                         <InputGroup>
                             <InputGroup.Addon><Glyphicon glyph="glyphicon glyphicon-search" /></InputGroup.Addon>
-                            <FormControl type="text" />
+                            <FormControl value={query} type="text" onChange={(event) => this.updateQuery(event.target.value)}/>
                         </InputGroup>
-                        <Button bsStyle="primary" className="addButton"><Glyphicon glyph="glyphicon glyphicon-plus" />Host</Button>
+                        <Button bsStyle="primary" className="addButton" onClick={this.handleClick} ><Glyphicon glyph="glyphicon glyphicon-plus" />Host</Button>
                     </Form>
                 </div>
                 <div>
-                    <HostTable hosts={showingHosts} activePage={this.state.activePage}/>
+                    <HostTable hosts={showingHosts} activePage={this.state.activePage} maxRow={10} />
                 </div>
                 <div className="pagination-container">
                     <Pagination

@@ -3,6 +3,7 @@ import { Route, Redirect } from 'react-router-dom'
 //import * as ProphetApi from './utils/ProphetApi'
 import Dashboard from "./Dashboard";
 import Host from "./Host";
+import AddHost from "./AddHost";
 import Manage from "./Manage";
 import { Link } from 'react-router-dom'
 import MainNav from './components/Navbar'
@@ -45,7 +46,7 @@ class Login extends Component {
         return (
             <div>
                 <form onSubmit={this.handleSubmit} className='login-form'>
-                    <Link className="test-logo" to="/">back</Link>
+                    <Link className="person-logo" to="/">back</Link>
                     <div className='login-details'>
                         <input type='text' name='user' placeholder='User'/>
                         <input type='text' name='password' placeholder='Password'/>
@@ -94,6 +95,7 @@ class App extends Component {
                 <Route exact path="/login" component={Login}/>
                 <PrivateRoute exact path="/dashboard" component={Dashboard}/>
                 <PrivateRoute exact path="/host" component={Host}/>
+                <PrivateRoute exact path="/host/add" component={AddHost}/>
                 <PrivateRoute exact path="/manage" component={Manage}/>
             </div>
         )
