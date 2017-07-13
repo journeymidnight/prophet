@@ -12,6 +12,12 @@ const headers = {
     'Authorization': token
 }
 
+function handleErrors(response) {
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+    return response;
+}
 
 export const addnode = (hostname, ip) => {
     var parameters = {
@@ -70,7 +76,8 @@ export const fetchmetric = (hostname, measurement, measure, from, to) => {
             headers: {
                 ...headers,
             }
-        }).then(res => res.json())
+        }).then(handleErrors)
+            .then(res => res.json())
             .then(data => data.data)
     )
 }

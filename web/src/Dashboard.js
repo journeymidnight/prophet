@@ -30,105 +30,59 @@ class Dashboard extends Component {
         osds: 0,
 
     }
-    componentDidMount() {
+
+    loaddata = () => {
         var to = Date.parse(new Date());
         var from = to - 10*60*1000 //latest ten minites
         var twoHours = 2*60*60*1000 //2 hours
-        ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_pgmap_state", "healthpgs", String(from), String(to)).then(
-            (array) => {
-                var temp = array.filter((x) => x[1] != null)
-                var lastItem = temp.pop()
-                console.log("health pg num:", lastItem[1])
-                this.setState({healthpgs:lastItem[1]})
-                return lastItem
-            }
-        )
-        ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_pgmap_state", "errorpg", String(from), String(to)).then(
-            (array) => {
-                var temp = array.filter((x) => x[1] != null)
-                var lastItem = temp.pop()
-                console.log("error pg num:", lastItem[1])
-                this.setState({errorpgs:lastItem[1]})
-                return lastItem
-            }
-        )
-        ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_pgmap_state", "warningpg", String(from), String(to)).then(
-            (array) => {
-                var temp = array.filter((x) => x[1] != null)
-                var lastItem = temp.pop()
-                console.log("warningpg pg num:", lastItem[1])
-                this.setState({warningpgs:lastItem[1]})
-                return lastItem
-            }
-        )
-        ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_osdmap", "num_osds", String(from), String(to)).then(
-            (array) => {
-                var temp = array.filter((x) => x[1] != null)
-                var lastItem = temp.pop()
-                console.log("num_osds num:", lastItem[1])
-                this.setState({osdALL:lastItem[1]})
-                return lastItem
-            }
-        )
+        var fetchHealthpgs = ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_pgmap_state", "healthpgs", String(from), String(to))
+        var fetchErrorpg = ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_pgmap_state", "errorpg", String(from), String(to))
+        var fetchWarningpg = ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_pgmap_state", "warningpg", String(from), String(to))
+        Promise.all([fetchHealthpgs, fetchErrorpg,fetchWarningpg]).then((results) => {
+            var latestHealthpg = results[0].filter((x) => x[1] != null).pop()
+            var latestErrorpg = results[1].filter((x) => x[1] != null).pop()
+            var latestWarningpg = results[2].filter((x) => x[1] != null).pop()
+            this.setState({healthpgs:latestHealthpg[1],errorpgs:latestErrorpg[1], warningpgs:latestWarningpg[1]})
+        })
 
-        ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_osdmap", "num_up_osds", String(from), String(to)).then(
-            (array) => {
-                var temp = array.filter((x) => x[1] != null)
-                var lastItem = temp.pop()
-                console.log("num_up_osds num:", lastItem[1])
-                this.setState({osdUp:lastItem[1]})
-                return lastItem
-            }
-        )
-        ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_osdmap", "num_in_osds", String(from), String(to)).then(
-            (array) => {
-                var temp = array.filter((x) => x[1] != null)
-                var lastItem = temp.pop()
-                console.log("num_in_osds num:", lastItem[1])
-                this.setState({osdIn:lastItem[1]})
-                return lastItem
-            }
-        )
-        ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_usage", "total_used_bytes", String(from), String(to)).then(
-            (array) => {
-                var temp = array.filter((x) => x[1] != null)
-                var lastItem = temp.pop()
-                console.log("total_used_bytes:", lastItem[1])
-                this.setState({usedBytes:lastItem[1]})
-                return lastItem
-            }
-        )
-        ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_usage", "total_avail_bytes", String(from), String(to)).then(
-            (array) => {
-                var temp = array.filter((x) => x[1] != null)
-                var lastItem = temp.pop()
-                console.log("total_avail_bytes:", lastItem[1])
-                this.setState({freeBytes:lastItem[1]})
-                return lastItem
-            }
-        )
-        ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_pool_stats", "write_op_per_sec", String(to-twoHours), String(to)).then(
-            (array) => {
-                var temp = array.filter((x) => x[1] != null)
+        var fetchNumOsds = ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_osdmap", "num_osds", String(from), String(to))
+        var fetchNumUpOsds = ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_osdmap", "num_up_osds", String(from), String(to))
+        var fetchNumInOsds = ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_osdmap", "num_in_osds", String(from), String(to))
+        Promise.all([fetchNumOsds, fetchNumUpOsds,fetchNumInOsds]).then((results) => {
+            var latestOsdNum = results[0].filter((x) => x[1] != null).pop()
+            var latestUpOsdNum = results[1].filter((x) => x[1] != null).pop()
+            var latestInOsdNum = results[2].filter((x) => x[1] != null).pop()
+            this.setState({osdALL:latestOsdNum[1],osdUp:latestUpOsdNum[1], osdIn:latestInOsdNum[1]})
+        })
 
-                this.setState({writeOps:temp})
-                var lastItem = temp.pop()
-                this.setState({writeOpsL:lastItem[1]})
-                console.log("write_op_per_sec latest:", temp)
-                return temp
-            }
-        )
-        ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_pool_stats", "read_op_per_sec", String(to-twoHours), String(to)).then(
-            (array) => {
-                var temp = array.filter((x) => x[1] != null)
-                this.setState({readOps:temp})
-                var lastItem = temp.pop()
-                this.setState({readOpsL:lastItem[1]})
-                console.log("read_op_per_sec latest:", temp)
-                return temp
-            }
-        )
+        var fetchTotalUsedBytes = ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_usage", "total_used_bytes", String(from), String(to))
+        var fetchTotalAvailBytes = ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_usage", "total_avail_bytes", String(from), String(to))
+        Promise.all([fetchTotalUsedBytes, fetchTotalAvailBytes]).then((results) => {
+            var latestTotalUsedBytes = results[0].filter((x) => x[1] != null).pop()
+            var latestTotalAvailBytes= results[1].filter((x) => x[1] != null).pop()
+            this.setState({usedBytes:latestTotalUsedBytes[1],freeBytes:latestTotalAvailBytes[1]})
+        })
+
+        var fetchWriteOpPerSec = ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_pool_stats", "write_op_per_sec", String(to-twoHours), String(to))
+        var fetchReadOpPerSec = ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_pool_stats", "write_op_per_sec", String(to-twoHours), String(to))
+        Promise.all([fetchWriteOpPerSec, fetchReadOpPerSec]).then((results) => {
+            var writeOpPerSec = results[0].filter((x) => x[1] != null)
+            var latestWriteOpPerSec = writeOpPerSec.pop()
+            var readOpPerSec = results[1].filter((x) => x[1] != null)
+            var latestReadOpPerSec= readOpPerSec.pop()
+            this.setState({writeOpsL:latestWriteOpPerSec[1],readOpsL:latestReadOpPerSec[1], writeOps:writeOpPerSec, readOps:readOpPerSec})
+        })
     }
+
+    componentDidMount() {
+        this.loaddata()
+        this.timer = setInterval(() => this.loaddata(), 30000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timer);
+    }
+
     render () {
         var osdOption = {
             tooltip: {
@@ -217,8 +171,8 @@ class Dashboard extends Component {
                 trigger: 'axis',
                 formatter: function (params) {
                     params = params[0];
-                    var date = new Date(params.name);
-                    return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
+                    var date = new Date(params.value[0])
+                    return date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + '  ' + params.value[1];
                 },
                 axisPointer: {
                     animation: false
