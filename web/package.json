@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "echarts-for-react": "^1.4.4",
     "escape-string-regexp": "^1.0.5",
     "querystring": "^0.2.0",
     "react": "^15.6.1",

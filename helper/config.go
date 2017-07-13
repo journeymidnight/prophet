@@ -2,8 +2,8 @@ package helper
 
 import (
 	"encoding/json"
-	"os"
 	"math/rand"
+	"os"
 )
 
 func Ternary(IF bool, THEN interface{}, ELSE interface{}) interface{} {
@@ -52,15 +52,14 @@ type Config struct {
 	PidFile                    string
 	BindPort                   int
 	DebugMode                  bool
-	LogLevel                   int  //1-20
-	IamEndpoint		   string
+	LogLevel                   int //1-20
+	IamEndpoint                string
 	DatabaseConnectionString   string
-	InfluxDbAddress		   string
-	InfluxDbUserName	   string
-	InfluxDbUserPassword	   string
-	InfluxDbName	   	   string
-
-
+	InfluxDbAddress            string
+	InfluxDbUserName           string
+	InfluxDbUserPassword       string
+	InfluxDbName               string
+	CephStatusReporterHostName string
 }
 
 type config struct {
@@ -69,13 +68,14 @@ type config struct {
 	PidFile                    string
 	BindPort                   int
 	DebugMode                  bool
-	LogLevel                   int  //1-20
-	IamEndpoint		   string
+	LogLevel                   int //1-20
+	IamEndpoint                string
 	DatabaseConnectionString   string
-	InfluxDbAddress		   string
-	InfluxDbUserName	   string
-	InfluxDbUserPassword	   string
-	InfluxDbName	   	   string
+	InfluxDbAddress            string
+	InfluxDbUserName           string
+	InfluxDbUserPassword       string
+	InfluxDbName               string
+	CephStatusReporterHostName string
 }
 
 var CONFIG Config
@@ -106,6 +106,6 @@ func SetupConfig() {
 	CONFIG.InfluxDbName = c.InfluxDbName
 	CONFIG.InfluxDbUserName = c.InfluxDbUserName
 	CONFIG.InfluxDbUserPassword = c.InfluxDbUserPassword
+	CONFIG.CephStatusReporterHostName = c.CephStatusReporterHostName
 
 }
-

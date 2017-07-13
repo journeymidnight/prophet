@@ -31,18 +31,21 @@ export const addnode = (hostname, ip) => {
 }
 
 
-export const delnode = (hostname) =>
-    fetch(`${api}/local/delnode`, {
-        method: 'DELETE',
-        headers: {
-            ...headers,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            hostname
-        })
-    }).then(res => res.json())
-
+export const delnode = (host) => {
+    var parameters = {
+        hostname: host.HostName
+    }
+    var para = '?' + querystring.stringify(parameters)
+    return (
+        fetch(`${api}/local/delnode${para}`, {
+            method: 'DELETE',
+            headers: {
+                ...headers,
+                'Content-Type': 'application/json'
+            }
+        }).then(res => res.json())
+    )
+}
 export const listnodes = () =>
     fetch(`${api}/local/listnodes`, {
         method: 'GET',
@@ -52,18 +55,22 @@ export const listnodes = () =>
     }).then(res => res.json())
         .then(data => data.data)
 
-export const fetchmetric = (hostname, measurement, measure, from, to) =>
-    fetch(`${api}/local/fetchmetric`, {
-        method: 'GET',
-        headers: {
-            ...headers,
-        },
-        body: JSON.stringify({
-            hostname,
-            measurement,
-            measure,
-            from,
-            to
-        })
-    }).then(res => res.json())
-        .then(data => data.Data)
+export const fetchmetric = (hostname, measurement, measure, from, to) => {
+    var parameters = {
+        hostname,
+        measurement,
+        measure,
+        from,
+        to
+    }
+    var para = '?' + querystring.stringify(parameters)
+    return (
+        fetch(`${api}/local/fetchmetric${para}`, {
+            method: 'GET',
+            headers: {
+                ...headers,
+            }
+        }).then(res => res.json())
+            .then(data => data.data)
+    )
+}

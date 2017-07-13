@@ -20,6 +20,14 @@ class Host extends Component {
         this.setState({ query: '' })
     }
 
+    removeHost = (host) => {
+        this.setState((state) => ({
+            hosts: state.hosts.filter((c) => c.HostName !== host.HostName)
+        }))
+
+        ProphetApi.delnode(host)
+    }
+
     componentDidMount() {
         ProphetApi.listnodes().then((hosts) => {
             this.setState({ hosts })
@@ -60,7 +68,7 @@ class Host extends Component {
                     </Form>
                 </div>
                 <div>
-                    <HostTable hosts={showingHosts} activePage={this.state.activePage} maxRow={10} />
+                    <HostTable hosts={showingHosts} activePage={this.state.activePage} maxRow={10} onRemoveHost={this.removeHost}/>
                 </div>
                 <div className="pagination-container">
                     <Pagination
