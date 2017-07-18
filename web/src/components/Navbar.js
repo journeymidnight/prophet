@@ -3,10 +3,6 @@ import { Nav, Navbar, NavItem } from 'react-bootstrap'
 
 
 class MainNav extends Component {
-    state = {
-        activeKey:0
-    }
-
     list = [
         {
             path:'/dashboard',
@@ -21,6 +17,19 @@ class MainNav extends Component {
             context:'Manage'
         }
     ]
+
+    constructor(props) {
+        super(props);
+        if (window.location.pathname.indexOf('/dashboard') !== -1) {
+            this.state = { activeKey: 0 }
+        } else if (window.location.pathname.indexOf('/host') !== -1) {
+            this.state = { activeKey: 1 }
+        } else if (window.location.pathname.indexOf('/manage') !== -1) {
+            this.state = { activeKey: 2 }
+        } else {
+            this.state = { activeKey: 0 }
+        }
+    }
 
     handleSelect = (selectedKey) => {
         this.setState({activeKey:selectedKey})

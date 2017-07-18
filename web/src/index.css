@@ -101,6 +101,7 @@ body, .app {
     height: 190px;
     margin-bottom: 10px;
     padding: 5px;
+    position: relative;
 }
 
 .bg-white {
@@ -124,4 +125,21 @@ body, .app {
 .gutter-0 > [class^="col-"], .gutter-10 > [class^=" col-"] {
     padding-right: 0px;
     padding-left: 0px;
+}
+
+.host-detail {
+    width: 70%;
+    margin-left: 15%;
+    background-color: white;
+}
+
+.host-detail header {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+.categorySelect {
+    margin-left: 30px;
+    text-align: center;
+    display: inline-block;
 }

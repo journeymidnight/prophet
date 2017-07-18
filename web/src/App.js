@@ -3,7 +3,8 @@ import { Route, Redirect } from 'react-router-dom'
 //import * as ProphetApi from './utils/ProphetApi'
 import Dashboard from "./Dashboard";
 import Host from "./Host";
-import AddHost from "./AddHost";
+import HostAdd from "./HostAdd";
+import HostDetail from "./HostDetail";
 import Manage from "./Manage";
 import { Link } from 'react-router-dom'
 import MainNav from './components/Navbar'
@@ -95,8 +96,10 @@ class App extends Component {
                 <Route exact path="/login" component={Login}/>
                 <PrivateRoute exact path="/dashboard" component={Dashboard}/>
                 <PrivateRoute exact path="/host" component={Host}/>
-                <PrivateRoute exact path="/host/add" component={AddHost}/>
+                <PrivateRoute exact path="/host/add" component={HostAdd}/>
+                <PrivateRoute exact path="/host/detail/:hostname" component={HostDetail}/>
                 <PrivateRoute exact path="/manage" component={Manage}/>
+
             </div>
         )
     }

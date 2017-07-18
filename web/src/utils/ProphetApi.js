@@ -1,5 +1,5 @@
 const querystring = require('querystring');
-const api = process.env.REACT_APP_PROPHET_API_URL || 'http://localhost:3000'
+const api = process.env.REACT_APP_PROPHET_API_URL || 'http://localhost:3001'
 
 
 let token = localStorage.token
@@ -61,13 +61,14 @@ export const listnodes = () =>
     }).then(res => res.json())
         .then(data => data.data)
 
-export const fetchmetric = (hostname, measurement, measure, from, to) => {
+export const fetchmetric = (hostname, measurement, measure, from, to, latest = false) => {
     var parameters = {
         hostname,
         measurement,
         measure,
         from,
-        to
+        to,
+        latest
     }
     var para = '?' + querystring.stringify(parameters)
     return (

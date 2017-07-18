@@ -1,5 +1,6 @@
 import React, { Component }from 'react'
 import { Table } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 class HostTable extends Component {
 
     render() {
@@ -21,7 +22,7 @@ class HostTable extends Component {
                     {subHosts.map((item, index) => (
                         <tr key={index}>
                             <td>{(activePage-1)*10 + index + 1}</td>
-                            <td>{item.HostName}</td>
+                            <td><Link to={`/host/detail/${item.HostName}`}>{item.HostName}</Link></td>
                             <td>{item.Ip}
                                 <button onClick={() => onRemoveHost(item)} className='host-remove'>
                                     Remove
