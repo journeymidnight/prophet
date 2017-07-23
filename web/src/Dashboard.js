@@ -2,6 +2,7 @@ import React , { Component } from 'react';
 import { Grid, Row, Col } from 'react-bootstrap'
 import { Metric, MetricChart, MetricWithChartInside } from './components/Metric'
 import * as ProphetApi from './utils/ProphetApi'
+var unit = require('./utils/Unit');
 
 class Dashboard extends Component {
     state = {
@@ -76,11 +77,11 @@ class Dashboard extends Component {
         })
 
         var fetchWriteOpPerSec = ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_pool_stats", "write_op_per_sec", String(to - twoHours), String(to))
-        var fetchReadOpPerSec = ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_pool_stats", "write_op_per_sec", String(to - twoHours), String(to))
+        var fetchReadOpPerSec = ProphetApi.fetchmetric("SpecifiedByConfig", "ceph_pool_stats", "read_op_per_sec", String(to - twoHours), String(to))
         Promise.all([fetchWriteOpPerSec, fetchReadOpPerSec]).then((results) => {
-            var writeOpPerSec = results[0].filter((x) => x[1] != null).map((x)=> [x[0],x[1].toFixed(2)]) //get rid of null values caused by difference between brower host and server host
+            var writeOpPerSec = results[0].filter((x) => x[1] != null).map((x)=> [x[0],parseFloat(x[1].toFixed(2))])//get rid of null values caused by difference between brower host and server host
             var latestWriteOpPerSec = writeOpPerSec.pop()
-            var readOpPerSec = results[1].filter((x) => x[1] != null).map((x)=> [x[0],x[1].toFixed(2)])
+            var readOpPerSec = results[1].filter((x) => x[1] != null).map((x)=> [x[0],parseFloat(x[1].toFixed(2))])
             var latestReadOpPerSec = readOpPerSec.pop()
             this.setState({
                 writeOpsL: latestWriteOpPerSec[1],
@@ -88,6 +89,7 @@ class Dashboard extends Component {
                 writeOps: writeOpPerSec,
                 readOps: readOpPerSec
             })
+            console.log("readOpsL writeOpsL",typeof this.state.readOpsL, typeof this.state.writeOpsL)
         }).catch((r) => {
             console.log("fetchmetric err")
             console.log(r)
@@ -193,7 +195,10 @@ class Dashboard extends Component {
         var usageOption = {
             tooltip : {
                 trigger: 'item',
-                formatter: "{a} <br/>{b} : {c} ({d}%)"
+//                formatter: "{a} <br/>{b} : {c} ({d}%)"
+                formatter: function (params) {
+                    return params.seriesName + '<br/>' + params.name + ' : ' +  unit.byte(params.value) + '('+ params.percent + '%)'
+                }
             },
             color: ['#FF0000', '#0000FF'],
             series : [
@@ -239,7 +244,7 @@ class Dashboard extends Component {
                     animation: false
                 }
             },
-            color: ['#0000FF','#FFFF00','#FF0000'],
+            color: ['#0000FF', '#FF0000', '#FFFF00'],
             xAxis: {
                 type: 'time',
                 splitLine: {
@@ -322,7 +327,7 @@ class Dashboard extends Component {
                             <Col md={4} sm={12}>
                                 <Metric icon="glyphicon glyphicon-sort"
                                         title="IOPS"
-                                        content={`${this.state.writeOpsL+this.state.readOpsL}`}
+                                        content={String(this.state.writeOpsL+this.state.readOpsL)}
                                         subContend="Reads + Writes"
                                         footer="" />
                             </Col>
@@ -336,7 +341,7 @@ class Dashboard extends Component {
                             icon="glyphicon glyphicon-sort"
                             title="USAGE"
                             option={usageOption}
-                            footer={`Total:${this.state.usedBytes+this.state.freeBytes} Bytes`} />
+                            footer={`Total: ${unit.byte(this.state.usedBytes+this.state.freeBytes)}`} />
                     </Col>
                     <Col md={3} sm={6}>
                         <Metric icon="glyphicon glyphicon-th"

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "echarts": "https://github.com/ecomfe/echarts.git",
     "echarts-for-react": "^1.4.4",
     "escape-string-regexp": "^1.0.5",
     "querystring": "^0.2.0",
@@ -11,6 +12,7 @@
     "react-bootstrap": "^0.31.0",
     "react-dom": "^15.6.1",
     "react-router-dom": "^4.1.1",
+    "react-time-input": "^0.0.16",
     "sort-by": "^1.2.0"
   },
   "proxy": "http://localhost:8890",

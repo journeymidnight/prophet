@@ -1,6 +1,7 @@
 import React, { Component }from 'react'
 import ReactEcharts from 'echarts-for-react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip ,Form, FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
+import * as ProphetApi from '../utils/ProphetApi'
 
 export class Metric extends Component {
 
@@ -81,32 +82,276 @@ export class MetricWithChartInside extends Component {
     }
 }
 
-const ONEHOUR = 60*60
-/*
-const HALFDAY  = 12*60*60
-const ONEDAY  = 24*60*60
-const THREEDAYS  = 3*24*60*60
-const ONEWEEK  = 7*24*60*60
-*/
 export class MetricForHost extends Component {
 
-    getInitialState() {
-        return {
+    constructor(props) {
+        super(props)
+        this.state = {
             title: this.props.title,
-            period: ONEHOUR,
-            dev:[],
-            currentDev:'',
+            selectedRange: "30m",
+            Ranges: ["5m", "15m", "30m", "1h", "3h", "6h", "12h", "24h"],
+            devs:[],
+            selectedDev:'',
             hostname: this.props.hostname,
             measurement: this.props.measurement,
             measure: this.props.measure,
-            data: []
+            keyName:this.props.keyName,
+            data: [],
+            config: {}
         }
     }
 
+    handleDevChange = (event)=> {
+        this.setState({selectedDev: event.target.value}, this.loaddata);
+    }
+
+    handlePeriodChange = (event)=> {
+        this.setState({selectedRange: event.target.value}, this.loaddata);
+    }
+
+    loaddata = () => {
+        let queryDevMetricString = `SELECT mean("${this.state.measure}") FROM "${this.state.measurement}" WHERE "${this.state.keyName}" = '${this.state.selectedDev}' AND "host" = '${this.state.hostname}' AND time > now() - ${this.state.selectedRange} GROUP BY time(${this.calGroupTime(this.state.selectedRange)})`
+        ProphetApi.queryDB(queryDevMetricString).then((data) => {
+            this.setState({data: data.filter((x) => x[1] != null)})
+        })
+    }
+
+    calGroupTime = (range) => {
+        let time = ''
+        switch (range) {
+            case '3h':
+                time = '15s';
+                break;
+            case '6h':
+                time = '30s';
+                break;
+            case '12h':
+                time = '1m';
+                break;
+            case '24':
+                time = '2m';
+                break;
+            default:
+                time = '10s'
+        }
+        return time
+    }
+
+    buildConfig = () => {
+        return {
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                top:'15%',
+                containLabel: true
+            },
+            legend: {
+                data: [this.state.title],
+            },
+            tooltip: {
+                trigger: 'axis',
+                formatter: function (params) {
+                    params = params[0];
+                    var date = new Date(params.value[0])
+                    return date.toTimeString() + '<br/>' + params.value[1].toFixed(2)
+                },
+                axisPointer: {
+                    animation: false
+                }
+            },
+            color: ['#0000FF', '#FF0000', '#FFFF00'],
+            xAxis: {
+                type: 'time',
+                splitLine: {
+                    show: true
+                }
+            },
+            yAxis: {
+                type: 'value',
+                boundaryGap: [0, '100%'],
+                splitLine: {
+                    show: true
+                }
+            },
+            series: [{
+                name: this.state.measure,
+                type: 'line',
+                showSymbol: false,
+                hoverAnimation: false,
+                data: this.state.data
+            }]
+        }
+    }
+    componentDidMount() {
+        let queryString = `SHOW TAG VALUES FROM "${this.state.measurement}" WITH KEY = "${this.state.keyName}" WHERE "host" = '${this.state.hostname}'`
+        ProphetApi.queryDB(queryString).then((devs) => {
+            if (devs.length > 0){
+                this.setState({devs: devs, selectedDev: devs[0][1]}, this.loaddata)
+            }
+        })
+    }
+
+
     render() {
         return (
-            <div>
-                play
+            <div style={{height: '50vh', marginTop:'15px', backgroundColor:'white', padding:'20px 10px 10px 20px'}}>
+                <span style={{fontStyle:'bold', fontSize:'1.5em'}}>{this.state.title}</span>
+                <Form inline style={{float: 'right'}}>
+                    <FormGroup controlId="DevSelect">
+                        <ControlLabel>Dev</ControlLabel>
+                        &nbsp;&nbsp;
+                        <FormControl componentClass="select" value={this.state.selectedDev} onChange={this.handleDevChange} bsSize="small">
+                            {this.state.devs.map((item, index) => (
+                                    <option key={index}>{item[1]}</option>
+                                )
+                            )}
+                        </FormControl>
+                    </FormGroup>
+
+                    <FormGroup controlId="RangeSelect" style={{marginLeft:'20px'}}>
+                        <ControlLabel>Range</ControlLabel>
+                        &nbsp;&nbsp;
+                        <FormControl componentClass="select" value={this.state.selectedRange} onChange={this.handlePeriodChange} bsSize="small">
+                            {this.state.Ranges.map((item, index) => (
+                                    <option key={index}>{item}</option>
+                                )
+                            )}
+                        </FormControl>
+                    </FormGroup>
+                </Form>
+                <ReactEcharts
+                    option={this.buildConfig()}
+                    notMerge={true}
+                    lazyUpdate={true}
+                    style={{height:'35vh', width:'100%'}}
+                />
+            </div>
+        )
+    }
+}
+
+export class MetricForHostWithOutDev extends Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            title: this.props.title,
+            selectedRange: "30m",
+            Ranges: ["5m", "15m", "30m", "1h", "3h", "6h", "12h", "24h"],
+            hostname: this.props.hostname,
+            measurement: this.props.measurement,
+            measure: this.props.measure,
+            data: [],
+            config: {}
+        }
+    }
+
+    handlePeriodChange = (event)=> {
+        this.setState({selectedRange: event.target.value}, this.loaddata);
+    }
+
+    loaddata = () => {
+        let queryMetricString = `SELECT mean("${this.state.measure}") FROM "${this.state.measurement}" WHERE "host" = '${this.state.hostname}' AND time > now() - ${this.state.selectedRange} GROUP BY time(${this.calGroupTime(this.state.selectedRange)})`
+        ProphetApi.queryDB(queryMetricString).then((data) => {
+            this.setState({data: data.filter((x) => x[1] != null)})
+        })
+    }
+
+    calGroupTime = (range) => {
+        let time = ''
+        switch (range) {
+            case '3h':
+                time = '15s';
+                break;
+            case '6h':
+                time = '30s';
+                break;
+            case '12h':
+                time = '1m';
+                break;
+            case '24':
+                time = '2m';
+                break;
+            default:
+                time = '10s'
+        }
+        return time
+    }
+
+    buildConfig = () => {
+        return {
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                top:'15%',
+                containLabel: true
+            },
+            legend: {
+                data: [this.state.title],
+            },
+            tooltip: {
+                trigger: 'axis',
+                formatter: function (params) {
+                    params = params[0];
+                    var date = new Date(params.value[0])
+                    return date.toTimeString() + '<br/>' + params.value[1].toFixed(2)
+                },
+                axisPointer: {
+                    animation: false
+                }
+            },
+            color: ['#0000FF', '#FF0000', '#FFFF00'],
+            xAxis: {
+                type: 'time',
+                splitLine: {
+                    show: true
+                }
+            },
+            yAxis: {
+                type: 'value',
+                boundaryGap: [0, '100%'],
+                splitLine: {
+                    show: true
+                }
+            },
+            series: [{
+                name: this.state.measure,
+                type: 'line',
+                showSymbol: false,
+                hoverAnimation: false,
+                data: this.state.data
+            }]
+        }
+    }
+    componentDidMount() {
+        this.loaddata()
+    }
+
+
+    render() {
+        return (
+            <div style={{height: '50vh', marginTop:'15px', backgroundColor:'white', padding:'20px 10px 10px 20px'}}>
+                <span style={{fontStyle:'bold', fontSize:'1.5em'}}>{this.state.title}</span>
+                <Form inline style={{float: 'right'}}>
+                    <FormGroup controlId="RangeSelect" style={{marginLeft:'20px'}}>
+                        <ControlLabel>Range</ControlLabel>
+                        &nbsp;&nbsp;
+                        <FormControl componentClass="select" value={this.state.selectedRange} onChange={this.handlePeriodChange} bsSize="small">
+                            {this.state.Ranges.map((item, index) => (
+                                    <option key={index}>{item}</option>
+                                )
+                            )}
+                        </FormControl>
+                    </FormGroup>
+                </Form>
+                <ReactEcharts
+                    option={this.buildConfig()}
+                    notMerge={true}
+                    lazyUpdate={true}
+                    style={{height:'35vh', width:'100%'}}
+                />
             </div>
         )
     }

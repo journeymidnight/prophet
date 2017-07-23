@@ -9,6 +9,7 @@ import (
 	. "github.com/journeymidnight/prophet/back/api/datatype"
 	"github.com/journeymidnight/prophet/back/db"
 	"github.com/journeymidnight/prophet/back/helper"
+	"github.com/journeymidnight/prophet/back/lc"
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
@@ -21,6 +22,8 @@ func LocalGetApiHandle(c *gin.Context) {
 		FetchMetric(c)
 	case "querydb":
 		QueryDb(c)
+	case "loadconfig":
+		LoadConfig(c)
 	default:
 		c.JSON(http.StatusBadRequest, QueryResponse{Message: http.StatusText(http.StatusBadRequest), Data: ""})
 		return
@@ -33,6 +36,8 @@ func LocalPutApiHandle(c *gin.Context) {
 	switch action {
 	case "addnode":
 		AddNode(c)
+	case "setconfig":
+		SetConfig(c)
 	default:
 		c.JSON(http.StatusBadRequest, QueryResponse{Message: http.StatusText(http.StatusBadRequest), Data: ""})
 		return
@@ -93,6 +98,39 @@ func ListNodes(c *gin.Context) {
 	c.JSON(http.StatusOK, QueryResponse{Message: "", Data: records})
 }
 
+func SetConfig(c *gin.Context) {
+	expiredays := c.Query("expiredays")
+	days, err := strconv.Atoi(expiredays)
+	if err != nil || days < 0 || days > 99999 {
+		c.JSON(http.StatusBadRequest, QueryResponse{Message: http.StatusText(http.StatusBadRequest), Data: "expiredays exceed range allows"})
+		return
+	}
+	starttime := c.Query("starttime")
+	helper.CONFIG.LcExpireDays = days
+	helper.CONFIG.LcStartTime = starttime
+	err = helper.SaveConfig()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, QueryResponse{Message: "save config failed", Data: err.Error()})
+	} else {
+		lc.State = "WAITING"
+		lc.LastLanchTime = time.Unix(0, 0)
+		c.JSON(http.StatusOK, QueryResponse{Message: "", Data: ""})
+	}
+	return
+}
+
+func LoadConfig(c *gin.Context) {
+	var msg struct {
+		LcExpireDays int    `json:"expiredays"`
+		LcStartTime  string `json:"starttime"`
+	}
+	msg.LcExpireDays = helper.CONFIG.LcExpireDays
+	msg.LcStartTime = helper.CONFIG.LcStartTime
+	c.JSON(http.StatusOK, QueryResponse{Message: "", Data: msg})
+
+	return
+}
+
 const pointsPerGraph float64 = 200
 const JavascriptISOString string = "2006-01-02T15:04:05.999Z07:00"
 
@@ -151,7 +189,7 @@ func FetchMetric(c *gin.Context) {
 		return
 	}
 	helper.Logger.Print(5, "records:", records)
-	c.JSON(http.StatusOK, QueryResponse{Message: "", Data: records[0].Series[0].Values})
+	c.JSON(http.StatusOK, QueryResponse{Message: "", Data: records})
 }
 
 func QueryDb(c *gin.Context) {
@@ -162,5 +200,5 @@ func QueryDb(c *gin.Context) {
 		return
 	}
 	helper.Logger.Print(5, "records:", records)
-	c.JSON(http.StatusOK, QueryResponse{Message: "", Data: records[0].Series[0].Values})
+	c.JSON(http.StatusOK, QueryResponse{Message: "", Data: records})
 }

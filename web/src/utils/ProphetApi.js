@@ -52,6 +52,7 @@ export const delnode = (host) => {
         }).then(res => res.json())
     )
 }
+
 export const listnodes = () =>
     fetch(`${api}/local/listnodes`, {
         method: 'GET',
@@ -60,6 +61,32 @@ export const listnodes = () =>
         }
     }).then(res => res.json())
         .then(data => data.data)
+
+export const setconfig = (config) => {
+    var para = '?' + querystring.stringify(config)
+    return (
+        fetch(`${api}/local/setconfig${para}`, {
+            method: 'PUT',
+            headers: {
+                ...headers,
+            }
+        }).then(handleErrors)
+    )
+
+}
+
+export const loadconfig = () => {
+    return (
+        fetch(`${api}/local/loadconfig`, {
+            method: 'GET',
+            headers: {
+                ...headers,
+            }
+        }).then(handleErrors)
+            .then(res => res.json())
+            .then(json => json.data)
+    )
+}
 
 export const fetchmetric = (hostname, measurement, measure, from, to, latest = false) => {
     var parameters = {
@@ -79,6 +106,23 @@ export const fetchmetric = (hostname, measurement, measure, from, to, latest = f
             }
         }).then(handleErrors)
             .then(res => res.json())
-            .then(data => data.data)
+            .then(json => json.data[0].Series[0].values)
+    )
+}
+
+export const queryDB = (q) => {
+    var parameters = {
+        q
+    }
+    var para = '?' + querystring.stringify(parameters)
+    return (
+        fetch(`${api}/local/querydb${para}`, {
+            method: 'GET',
+            headers: {
+                ...headers,
+            }
+        }).then(handleErrors)
+            .then(res => res.json())
+            .then(json => json.data[0].Series[0].values)
     )
 }

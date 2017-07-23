@@ -5,19 +5,21 @@ import (
 	"os"
 	"strconv"
 	"syscall"
-	"github.com/journeymidnight/prophet/back/helper"
-	"github.com/journeymidnight/prophet/back/log"
+
 	"github.com/journeymidnight/prophet/back/api"
-	"gopkg.in/gin-gonic/gin.v1"
 	"github.com/journeymidnight/prophet/back/db"
+	"github.com/journeymidnight/prophet/back/helper"
+	"github.com/journeymidnight/prophet/back/lc"
+	"github.com/journeymidnight/prophet/back/log"
+	"gopkg.in/gin-gonic/gin.v1"
 )
 
 var logger *log.Logger
 
 func main() {
 	helper.SetupConfig()
-	defer func(){
-		if err:=recover();err!=nil{
+	defer func() {
+		if err := recover(); err != nil {
 			fmt.Println(err) // 这里的err其实就是panic传入的内容，55
 		}
 	}()
@@ -40,6 +42,7 @@ func main() {
 	/* redirect stdout stderr to log  */
 	syscall.Dup2(int(f.Fd()), 2)
 	syscall.Dup2(int(f.Fd()), 1)
+	go lc.LcLoop()
 	router := gin.Default()
 	router.GET("/:dst/:action", api.GetHandle)
 	router.PUT("/:dst/:action", api.PutHandle)
@@ -47,4 +50,3 @@ func main() {
 	router.POST("/:dst/:action", api.PostHandle)
 	router.Run(":" + strconv.Itoa(helper.CONFIG.BindPort))
 }
-

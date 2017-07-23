@@ -2,6 +2,7 @@ package helper
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"math/rand"
 	"os"
 )
@@ -60,6 +61,9 @@ type Config struct {
 	InfluxDbUserPassword       string
 	InfluxDbName               string
 	CephStatusReporterHostName string
+	LcExpireDays               int
+	LcStartTime                string
+	LcCmd                      string
 }
 
 type config struct {
@@ -76,6 +80,9 @@ type config struct {
 	InfluxDbUserPassword       string
 	InfluxDbName               string
 	CephStatusReporterHostName string
+	LcExpireDays               int
+	LcStartTime                string
+	LcCmd                      string
 }
 
 var CONFIG Config
@@ -107,5 +114,20 @@ func SetupConfig() {
 	CONFIG.InfluxDbUserName = c.InfluxDbUserName
 	CONFIG.InfluxDbUserPassword = c.InfluxDbUserPassword
 	CONFIG.CephStatusReporterHostName = c.CephStatusReporterHostName
+	CONFIG.LcExpireDays = Ternary(c.LcExpireDays == 0, 0, c.LcExpireDays).(int)
+	CONFIG.LcStartTime = Ternary(c.LcStartTime == "", "00:00", c.LcStartTime).(string)
+	CONFIG.LcCmd = Ternary(c.LcCmd == "", "echo 'lets rock at {{time}}'", c.LcCmd).(string)
+}
 
+func SaveConfig() error {
+
+	b, err := json.MarshalIndent(CONFIG, "", "    ")
+	if err != nil {
+		Logger.Println(5, err)
+	}
+	err = ioutil.WriteFile("/etc/prophet/prophet.json", b, 0644)
+	if err != nil {
+		Logger.Println(5, "save config failed", err)
+	}
+	return err
 }

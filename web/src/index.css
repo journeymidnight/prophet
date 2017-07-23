@@ -130,16 +130,20 @@ body, .app {
 .host-detail {
     width: 70%;
     margin-left: 15%;
-    background-color: white;
 }
 
 .host-detail header {
     font-size: 1.5em;
-    margin-bottom: 15px;
+    margin-bottom: 30px;
 }
 
 .categorySelect {
     margin-left: 30px;
     text-align: center;
     display: inline-block;
+}
+
+.SelectContainer {
+    float: right;
+    margin-top: -22px;
 }
