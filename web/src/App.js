@@ -8,12 +8,14 @@ import HostDetail from "./HostDetail";
 import Manage from "./Manage";
 import { Link } from 'react-router-dom'
 import MainNav from './components/Navbar'
+var NotificationSystem = require('react-notification-system');
 
 const fakeAuth = {
     isAuthenticated: false,
     authenticate(cb) {
         this.isAuthenticated = true
         setTimeout(cb, 100) // fake async
+
     },
     signout(cb) {
         this.isAuthenticated = false
@@ -24,14 +26,42 @@ const fakeAuth = {
 class Login extends Component {
 
     state = {
-        redirectToReferrer: false
+        redirectToReferrer: false,
+        user: '',
+        password: ''
     }
 
     handleSubmit = (e) => {
         e.preventDefault()
-        fakeAuth.authenticate(() => {
-            this.setState({redirectToReferrer: true})
-        })
+        if (this.state.user === "root" && this.state.password === "root") {
+            window.notify.addNotification(
+                {
+                    message: 'Login Success',
+                    level: 'success',
+                    autoDismiss: 3,
+                    position: 'tr'
+                }
+            )
+            fakeAuth.authenticate(() => {
+                this.setState({redirectToReferrer: true})
+            })
+        } else {
+            window.notify.addNotification(
+                {
+                    message: 'Invalid User or Password',
+                    level: 'error',
+                    autoDismiss: 3,
+                    position: 'tr',
+                }
+            )
+        }
+    }
+
+    handleUserChange = (event) => {
+        this.setState({user: event.target.value});
+    }
+    onTimePasswordHandler = (event) => {
+        this.setState({password: event.target.value});
     }
 
     render() {
@@ -49,8 +79,8 @@ class Login extends Component {
                 <form onSubmit={this.handleSubmit} className='login-form'>
                     <Link className="person-logo" to="/">back</Link>
                     <div className='login-details'>
-                        <input type='text' name='user' placeholder='User'/>
-                        <input type='text' name='password' placeholder='Password'/>
+                        <input type='text' name='user' placeholder='User' value={this.state.user} onChange={this.handleUserChange} />
+                        <input type='text' name='password' placeholder='Password' value={this.state.password} onChange={this.onTimePasswordHandler} />
                         <button>Login</button>
                     </div>
                 </form>
@@ -73,7 +103,15 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 )
 
 class App extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            _notificationSystem: null
+        }
+    }
+
     componentDidMount() {
+        window.notify = this.refs.notificationSystem;
     }
 
     render() {
@@ -99,7 +137,7 @@ class App extends Component {
                 <PrivateRoute exact path="/host/add" component={HostAdd}/>
                 <PrivateRoute exact path="/host/detail/:hostname" component={HostDetail}/>
                 <PrivateRoute exact path="/manage" component={Manage}/>
-
+                <NotificationSystem ref="notificationSystem" />
             </div>
         )
     }
