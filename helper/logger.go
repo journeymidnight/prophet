@@ -24,9 +24,10 @@ import (
 	"runtime/debug"
 	"strconv"
 	"strings"
-	"github.com/journeymidnight/prophet/back/log"
+
 	"github.com/dustin/go-humanize"
-	)
+	"github.com/journeymidnight/prophet/log"
+)
 
 var Logger *log.Logger
 

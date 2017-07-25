@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/journeymidnight/prophet/back/helper"
+	"github.com/journeymidnight/prophet/helper"
 )
 
 func isTimeUp(startTime string, lastLunchTime time.Time) (bool, error) {

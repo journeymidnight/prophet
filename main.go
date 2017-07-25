@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/journeymidnight/prophet/back/api"
-	"github.com/journeymidnight/prophet/back/db"
-	"github.com/journeymidnight/prophet/back/helper"
-	"github.com/journeymidnight/prophet/back/lc"
-	"github.com/journeymidnight/prophet/back/log"
+	"github.com/journeymidnight/prophet/api"
+	"github.com/journeymidnight/prophet/db"
+	"github.com/journeymidnight/prophet/helper"
+	"github.com/journeymidnight/prophet/lc"
+	"github.com/journeymidnight/prophet/log"
 	"gopkg.in/gin-gonic/gin.v1"
 )
 

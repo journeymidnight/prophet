@@ -1,15 +1,15 @@
 package db
 
 import (
-//	"database/sql"
-	"fmt"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/journeymidnight/prophet/back/helper"
-	. "github.com/journeymidnight/prophet/back/api/datatype"
-	"github.com/influxdata/influxdb/client/v2"
+	//	"database/sql"
 	"database/sql"
-)
+	"fmt"
 
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/influxdata/influxdb/client/v2"
+	. "github.com/journeymidnight/prophet/api/datatype"
+	"github.com/journeymidnight/prophet/helper"
+)
 
 var Db *sql.DB
 var Client client.Client
@@ -79,7 +79,7 @@ func QueryDB(cmd string) (res []client.Result, err error) {
 	return res, err
 }
 
-func CreateInfluxDbConnection() client.Client{
+func CreateInfluxDbConnection() client.Client {
 	c, err := client.NewHTTPClient(client.HTTPConfig{
 		Addr:     helper.CONFIG.InfluxDbAddress,
 		Username: helper.CONFIG.InfluxDbUserName,
@@ -117,6 +117,7 @@ func InitDb() {
 
 	return
 }
+
 /*
 func InsertNodeRecord(ip string, name string) error {
 	bp, err := client.NewBatchPoints(client.BatchPointsConfig{

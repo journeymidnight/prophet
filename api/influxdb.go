@@ -11,14 +11,16 @@
 */
 
 package api
+
 import (
-	"gopkg.in/gin-gonic/gin.v1"
-	. "github.com/journeymidnight/prophet/back/api/datatype"
-	"github.com/journeymidnight/prophet/back/helper"
-	"net/http"
-	"io/ioutil"
 	"bytes"
+	"io/ioutil"
+	"net/http"
+
 	"github.com/bitly/go-simplejson"
+	. "github.com/journeymidnight/prophet/api/datatype"
+	"github.com/journeymidnight/prophet/helper"
+	"gopkg.in/gin-gonic/gin.v1"
 )
 
 func InfluxDbHandle(c *gin.Context) {
@@ -28,13 +30,13 @@ func InfluxDbHandle(c *gin.Context) {
 	body, _ := ioutil.ReadAll(reader)
 	js, err := simplejson.NewJson(body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, QueryResponse{Message:"uncode body err",Data:err.Error()})
+		c.JSON(http.StatusBadRequest, QueryResponse{Message: "uncode body err", Data: err.Error()})
 		return
 	}
 	js.Set("action", action)
-	m_body , err := js.MarshalJSON()
+	m_body, err := js.MarshalJSON()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, QueryResponse{Message:"MarshalJSON err",Data:err.Error()})
+		c.JSON(http.StatusBadRequest, QueryResponse{Message: "MarshalJSON err", Data: err.Error()})
 		return
 	}
 	iamClient := new(http.Client)
@@ -42,7 +44,7 @@ func InfluxDbHandle(c *gin.Context) {
 	request.Header = c.Request.Header
 	response, err := iamClient.Do(request)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, QueryResponse{Message:"proxy request to iam failed",Data:err.Error()})
+		c.JSON(http.StatusInternalServerError, QueryResponse{Message: "proxy request to iam failed", Data: err.Error()})
 		return
 	}
 	res_body, _ := ioutil.ReadAll(response.Body)

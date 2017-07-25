@@ -6,10 +6,10 @@ import (
 	"strconv"
 	"time"
 
-	. "github.com/journeymidnight/prophet/back/api/datatype"
-	"github.com/journeymidnight/prophet/back/db"
-	"github.com/journeymidnight/prophet/back/helper"
-	"github.com/journeymidnight/prophet/back/lc"
+	. "github.com/journeymidnight/prophet/api/datatype"
+	"github.com/journeymidnight/prophet/db"
+	"github.com/journeymidnight/prophet/helper"
+	"github.com/journeymidnight/prophet/lc"
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
