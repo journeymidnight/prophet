@@ -47,7 +47,7 @@ class HostDetail extends Component {
                     </div>
                     <div className="categorySelect">
                         <div>Disk</div>
-                        <Button bsStyle="primary" bsSize="sm" onClick={this.handleClick}>RWRates</Button>
+                        <Button bsStyle="primary" bsSize="sm" onClick={this.handleClick}>RWBytes</Button>
                         <Button bsStyle="primary" bsSize="sm" onClick={this.handleClick}>Capacity</Button>
                         <Button bsStyle="primary" bsSize="sm" onClick={this.handleClick}>Inodes</Button>
                     </div>
@@ -73,10 +73,10 @@ class HostDetail extends Component {
                     </div>
                 ) : (<div/>)}
 
-                {this.state.category === "RWRates" ? (
+                {this.state.category === "RWBytes" ? (
                     <div>
-                        <MetricForHost hostname={this.state.hostname} measurement="disk" measure="rd_sec_per_s" keyName="device" title="Disk Read Sector Per Sec"/>
-                        <MetricForHost hostname={this.state.hostname} measurement="disk" measure="wr_sec_per_s" keyName="device" title="Disk Write Sector Per Sec"/>
+                        <MetricForHost hostname={this.state.hostname} measurement="disk" measure="read_bps" keyName="device" title="Disk Read Bytes Per Sec"/>
+                        <MetricForHost hostname={this.state.hostname} measurement="disk" measure="write_bps" keyName="device" title="Disk Write Bytes Per Sec"/>
                     </div>
                 ) : (<div/>)}
 

@@ -113,7 +113,9 @@ export class MetricForHost extends Component {
         let queryDevMetricString = `SELECT mean("${this.state.measure}") FROM "${this.state.measurement}" WHERE "${this.state.keyName}" = '${this.state.selectedDev}' AND "host" = '${this.state.hostname}' AND time > now() - ${this.state.selectedRange} GROUP BY time(${this.calGroupTime(this.state.selectedRange)})`
         ProphetApi.queryDB(queryDevMetricString).then((data) => {
             this.setState({data: data.filter((x) => x[1] != null)})
-        })
+        }).catch((r) => {
+            console.log("setState err")
+            console.log(r)})
     }
 
     calGroupTime = (range) => {

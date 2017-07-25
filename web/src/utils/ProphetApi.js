@@ -124,5 +124,8 @@ export const queryDB = (q) => {
         }).then(handleErrors)
             .then(res => res.json())
             .then(json => json.data[0].Series[0].values)
+            .catch((r) => {
+                console.log("queryDB err")
+                console.log(r)})
     )
 }
