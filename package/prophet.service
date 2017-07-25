@@ -1,0 +1,12 @@
+[Unit]
+Description=prophet
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/prophet
+ExecStop=/usr/bin/killall prophet
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
