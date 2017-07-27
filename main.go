@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"strconv"
 	"syscall"
-	"net/http"
+
 	"github.com/journeymidnight/prophet/api"
 	"github.com/journeymidnight/prophet/db"
 	"github.com/journeymidnight/prophet/helper"
@@ -43,13 +44,11 @@ func main() {
 	syscall.Dup2(int(f.Fd()), 2)
 	syscall.Dup2(int(f.Fd()), 1)
 	go lc.LcLoop()
-	webRouter := gin.Default()
-	webRouter.StaticFS("/", http.Dir("/usr/local/prophet-ui"))
-	go webRouter.Run(":80")
 	router := gin.Default()
-	router.GET("/:dst/:action", api.GetHandle)
-	router.PUT("/:dst/:action", api.PutHandle)
-	router.DELETE("/:dst/:action", api.DelHandle)
+	router.StaticFS("/", http.Dir("/usr/local/prophet-ui"))
+	//	router.GET("/:dst/:action", api.GetHandle)
+	//	router.PUT("/:dst/:action", api.PutHandle)
+	//	router.DELETE("/:dst/:action", api.DelHandle)
 	router.POST("/:dst/:action", api.PostHandle)
 	router.Run(":" + strconv.Itoa(helper.CONFIG.BindPort))
 }

@@ -1,7 +1,10 @@
 const querystring = require('querystring');
-const api = process.env.REACT_APP_PROPHET_API_URL || 'http://localhost:3001'
+let api = process.env.REACT_APP_PROPHET_API_URL || 'http://localhost:3001'
+if (process.env.NODE_ENV === 'production') {
+    api = ''
+}
 
-
+console.log("api:", api)
 let token = localStorage.token
 
 if (!token)
@@ -27,7 +30,7 @@ export const addnode = (hostname, ip) => {
     var para = '?' + querystring.stringify(parameters)
     return (
         fetch(`${api}/local/addnode${para}`, {
-            method: 'PUT',
+            method: 'POST',
             headers: {
                 ...headers,
                 'Content-Type': 'application/json'
@@ -44,7 +47,7 @@ export const delnode = (host) => {
     var para = '?' + querystring.stringify(parameters)
     return (
         fetch(`${api}/local/delnode${para}`, {
-            method: 'DELETE',
+            method: 'POST',
             headers: {
                 ...headers,
                 'Content-Type': 'application/json'
@@ -55,7 +58,7 @@ export const delnode = (host) => {
 
 export const listnodes = () =>
     fetch(`${api}/local/listnodes`, {
-        method: 'GET',
+        method: 'POST',
         headers: {
             ...headers,
         }
@@ -66,7 +69,7 @@ export const setconfig = (config) => {
     var para = '?' + querystring.stringify(config)
     return (
         fetch(`${api}/local/setconfig${para}`, {
-            method: 'PUT',
+            method: 'POST',
             headers: {
                 ...headers,
             }
@@ -78,7 +81,7 @@ export const setconfig = (config) => {
 export const loadconfig = () => {
     return (
         fetch(`${api}/local/loadconfig`, {
-            method: 'GET',
+            method: 'POST',
             headers: {
                 ...headers,
             }
@@ -100,7 +103,7 @@ export const fetchmetric = (hostname, measurement, measure, from, to, latest = f
     var para = '?' + querystring.stringify(parameters)
     return (
         fetch(`${api}/local/fetchmetric${para}`, {
-            method: 'GET',
+            method: 'POST',
             headers: {
                 ...headers,
             }
@@ -117,7 +120,7 @@ export const queryDB = (q) => {
     var para = '?' + querystring.stringify(parameters)
     return (
         fetch(`${api}/local/querydb${para}`, {
-            method: 'GET',
+            method: 'POST',
             headers: {
                 ...headers,
             }

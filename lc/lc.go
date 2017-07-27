@@ -15,7 +15,7 @@ func isTimeUp(startTime string, lastLunchTime time.Time) (bool, error) {
 	var hour int
 	var min int
 	now := time.Now()
-	helper.Logger.Println(5, "lastlunchtime", lastLunchTime.String())
+	helper.Logger.Println(20, "lastlunchtime", lastLunchTime.String())
 	if lastLunchTime.AddDate(0, 0, 1).After(now) {
 		return false, nil
 	}
@@ -23,12 +23,12 @@ func isTimeUp(startTime string, lastLunchTime time.Time) (bool, error) {
 	if err != nil || num < 2 {
 		return false, err
 	}
-	helper.Logger.Println(5, "time compair", hour, min)
+	helper.Logger.Println(20, "time compair", hour, min)
 	if (now.Hour()*60 + now.Minute()) >= (hour*60 + min) {
 		helper.Logger.Println(5, "Time is Up")
 		return true, nil
 	}
-	helper.Logger.Println(5, "Time is not Up")
+	helper.Logger.Println(20, "Time is not Up")
 	return false, nil
 }
 

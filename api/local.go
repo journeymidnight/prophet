@@ -13,7 +13,7 @@ import (
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
-func LocalGetApiHandle(c *gin.Context) {
+func LocalApiHandle(c *gin.Context) {
 	action := c.Param("action")
 	switch action {
 	case "listnodes":
@@ -24,31 +24,12 @@ func LocalGetApiHandle(c *gin.Context) {
 		QueryDb(c)
 	case "loadconfig":
 		LoadConfig(c)
-	default:
-		c.JSON(http.StatusBadRequest, QueryResponse{Message: http.StatusText(http.StatusBadRequest), Data: ""})
-		return
-	}
-	return
-}
-
-func LocalPutApiHandle(c *gin.Context) {
-	action := c.Param("action")
-	switch action {
 	case "addnode":
 		AddNode(c)
-	case "setconfig":
-		SetConfig(c)
-	default:
-		c.JSON(http.StatusBadRequest, QueryResponse{Message: http.StatusText(http.StatusBadRequest), Data: ""})
-		return
-	}
-	return
-}
-func LocalDelApiHandle(c *gin.Context) {
-	action := c.Param("action")
-	switch action {
 	case "delnode":
 		DelNode(c)
+	case "setconfig":
+		SetConfig(c)
 	default:
 		c.JSON(http.StatusBadRequest, QueryResponse{Message: http.StatusText(http.StatusBadRequest), Data: ""})
 		return
