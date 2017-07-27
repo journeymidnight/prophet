@@ -149,7 +149,7 @@ export class MetricForHost extends Component {
                 containLabel: true
             },
             legend: {
-                data: [this.state.title],
+                data: [this.state.measure],
             },
             tooltip: {
                 trigger: 'axis',
@@ -291,7 +291,7 @@ export class MetricForHostWithOutDev extends Component {
                 containLabel: true
             },
             legend: {
-                data: [this.state.title],
+                data: [this.state.measure],
             },
             tooltip: {
                 trigger: 'axis',
