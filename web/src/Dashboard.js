@@ -129,7 +129,7 @@ class Dashboard extends Component {
         Promise.all([fetchHealthStatus, fetchHealthSummary]).then((results) => {
             var latestHealthStatus = results[0]
             var latestHealthSummary = results[1]
-            this.setState({healthStatus: latestHealthStatus[0][1], healthSummary: latestHealthSummary[0][1].split(',')})
+            this.setState({healthStatus: latestHealthStatus[0][1], healthSummary: latestHealthSummary[0][1].split(',').filter((x) => x !== "" )})
             console.log("info", this.state.healthStatus, this.state.healthSummary)
         }).catch((r) => {
             console.log("fetchmetric err")
