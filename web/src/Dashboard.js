@@ -89,7 +89,7 @@ class Dashboard extends Component {
                 writeOps: writeOpPerSec,
                 readOps: readOpPerSec
             })
-            console.log("readOpsL writeOpsL",typeof this.state.readOpsL, typeof this.state.writeOpsL)
+            console.log("readOpsL writeOpsL", this.state.readOpsL, this.state.writeOpsL)
         }).catch((r) => {
             console.log("fetchmetric err")
             console.log(r)

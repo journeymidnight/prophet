@@ -4,21 +4,37 @@ import * as ProphetApi from './utils/ProphetApi'
 import {MetricForHost, MetricForHostWithOutDev} from './components/Metric'
 
 class HostDetail extends Component {
-    state = {
-        hostname: "",
-        category: "",
-        allHosts: []
+    constructor(props) {
+        super(props);
+        this.state = {
+            hostname: this.props.match.params.hostname,
+            category: "Summary",
+            allHosts: []
+        }
     }
 
     componentDidMount() {
-        const { match } = this.props
         ProphetApi.listnodes().then((hosts) => {
             this.setState({allHosts: hosts})
         })
-        this.setState({hostname:match.params.hostname, category:"summary"})
+//        this.setState({hostname:match.params.hostname, category:"summary"})
     }
+
+    shouldComponentUpdate() {
+        return true
+    }
+
+    componentWillReceiveProps(props) {
+        console.log("got new props",this.props.match.params.hostname)
+        console.log("got new props",this.props.match.url)
+        console.log("got new props",props)
+        this.setState({hostname: props.match.params.hostname})
+    }
+
     handleChange = (event) => {
-        this.setState({hostname: event.target.value});
+        console.log("select value:", event.target.value)
+        this.props.history.push(`/host/detail/${event.target.value}`)
+//        this.setState({hostname: event.target.value})
     }
 
     handleClick = (event) => {

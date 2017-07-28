@@ -33,6 +33,7 @@ class MainNav extends Component {
 
     handleSelect = (selectedKey) => {
         this.setState({activeKey:selectedKey})
+        console.log("useful history", this.props.history)
         if (selectedKey === 0) {
             this.props.history.push('/dashboard')
         } else if (selectedKey === 1) {

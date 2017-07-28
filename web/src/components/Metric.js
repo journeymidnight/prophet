@@ -109,6 +109,10 @@ export class MetricForHost extends Component {
         this.setState({selectedRange: event.target.value}, this.loaddata);
     }
 
+    componentWillReceiveProps(props) {
+        this.setState({hostname: props.hostname}, this.loaddata)
+    }
+
     loaddata = () => {
         let queryDevMetricString = `SELECT mean("${this.state.measure}") FROM "${this.state.measurement}" WHERE "${this.state.keyName}" = '${this.state.selectedDev}' AND "host" = '${this.state.hostname}' AND time > now() - ${this.state.selectedRange} GROUP BY time(${this.calGroupTime(this.state.selectedRange)})`
         ProphetApi.queryDB(queryDevMetricString).then((data) => {
@@ -251,6 +255,10 @@ export class MetricForHostWithOutDev extends Component {
 
     handlePeriodChange = (event)=> {
         this.setState({selectedRange: event.target.value}, this.loaddata);
+    }
+
+    componentWillReceiveProps(props) {
+        this.setState({hostname: props.hostname}, this.loaddata)
     }
 
     loaddata = () => {
