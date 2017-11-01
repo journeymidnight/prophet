@@ -16,6 +16,7 @@ mkdir -p $rpmbuild_dir/{SOURCES,SPECS}
 cp $spec $rpmbuild_dir/SPECS
 sed -i "2i\%define version ${version}\n%define release ${release}" $rpmbuild_dir/SPECS/$spec
 echo 'rpmbuild...'
+npm install
 npm run build
 cd ../build
 tar -zcvf $rpmbuild_dir/SOURCES/prophet-ui.tar.gz .
