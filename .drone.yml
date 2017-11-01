@@ -1,0 +1,15 @@
+pipeline:
+  build:
+    image: centos:7
+    commands:
+      - yum install -y rpm-build nodejs golang;
+      - pushd package && sh build_rpm.sh && popd
+      - pushd web/package && sh build_rpm.sh
+  github_release:
+    image: plugins/github-release
+    files:
+      - "web/x86_64/*.rpm"
+      - "package/*.x86_64.rpm"
+    secrets: [github_token]
+    when:
+      event: [tag]
