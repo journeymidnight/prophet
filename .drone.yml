@@ -2,6 +2,7 @@ pipeline:
   build:
     image: centos:7
     commands:
+      - yum install -y epel-release
       - yum install -y rpm-build nodejs golang git make
       - pushd package && sh build_rpm.sh && popd
       - pushd web/package && sh build_rpm.sh
