@@ -26,7 +26,10 @@ ip varchar(20)
 
 # 3.prepare influxdb
 
-# 4.modify config
+# 4.prepare telegraf
+安装telegraf之前，需要安装sysstat才能收集磁盘数据。  
+
+# 5.modify config
 ```
 {
     "LogPath": "/var/log/prophet/prophet.log",
@@ -48,6 +51,6 @@ ip varchar(20)
 }
 ```
 
-# 5.start service
+# 6.start service
 
 	systemctl start prophet
